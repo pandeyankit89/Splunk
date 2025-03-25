@@ -36,14 +36,14 @@ This repository serves as a personal reference and a resource for anyone looking
 ---
 ## 🚀 Splunk Training - Day 2 Topics
 
-#__* Difference between Real-time and Relative-time Search*__
+#__*Difference between Real-time and Relative-time Search*__
 
-#__* 🔍 Type of Search Modes*__
+#__*🔍 Type of Search Modes*__
 - ⚡ Fast
 - 🤖 Smart
 - 🧐 Verbose
 
-#__* Important Splunk Commands*__
+#__*Important Splunk Commands*__
 - `| table` command
 - `| rename` command
 - `| stats` command - `count`, `sum`, `avg`, `list`, `values`
@@ -57,7 +57,7 @@ This repository serves as a personal reference and a resource for anyone looking
 - `| fields` command with `+/-`
 - `| chart` command
 
-#__* ❓ Quiz*__
+#__*❓ Quiz*__
 **Which query is most optimized?** 🤔
 
 ---
