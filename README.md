@@ -6,32 +6,32 @@ Welcome to my 10 Days Splunk Power User Training Notes! 🚀 This repository con
 
 This repository serves as a personal reference and a resource for anyone looking to learn or revise Splunk fundamentals and advanced concepts. Each day's notes will cover essential topics with practical examples.
 
-# 🚀 Splunk Training - Day 1 Topics
+## 🚀 Splunk Training - Day 1 Topics
 
-## 📊 Types of Dashboard
+#__*Types of Dashboard*__
 
-## 🏗️ Splunk Enterprise Components
+#__*Splunk Enterprise Components*__
 
-## 📏 License Calculation
-- 🏷️ Type of licenses
-- ⚙️ How licensing works
-- 📊 How data is measured
+#__*License Calculation*__
+- Type of licenses
+- How licensing works
+- How data is measured
 
-## 🔗 License Pooling
+#__*License Pooling*__
 
-## 📡 Splunk Forwarders
-- 🔄 Difference between Universal Forwarder and Heavy-Forwarder
-- ❓ Why to use Heavy-Forwarder?
+#__*Splunk Forwarders*__
+- Difference between Universal Forwarder and Heavy-Forwarder
+- Why to use Heavy-Forwarder?
 
-## 📂 Index Management
-- 📁 Type of Index
-- 🏺 Buckets
+#__*Index Management*__
+- Type of Index
+- Buckets
 
-## 📁 Splunk Directory Structure
+#__*📁 Splunk Directory Structure*__
 
-## ⚙️ Job Management
-- ⏳ Managing long running jobs
-- 🔐 Search restriction through `authorize.conf`
+#__*⚙️ Job Management*__
+- Managing long running jobs
+- Search restriction through `authorize.conf`
 
 ---
 📌 *Stay tuned for more!*
