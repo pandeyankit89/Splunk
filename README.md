@@ -158,6 +158,20 @@ This repository serves as a personal reference and a resource for anyone looking
 	- (1) link 
 	- (2) search
 ---
+## 🚀 Splunk Training - Day 6 Topics
+
+#__*Universal Forwarder*__
+- Download and Install UF
+- Fixing `minimum free disk space (5000MB)` issue
+- Enable Port 9997 on Enterprise and configure UF to communicate on 9997
+- Check Connectivity at UF end through command
+- Check Connectivity at Splunk Enterprise end through SPL
+- Create custom log and forward its data to splunk
+	- configuring `inputs.conf` in '../system/local' [NEVER in in '../system/defult']
+	- configuring `outputs.conf` in '../system/local' [NEVER in in '../system/defult']
+- Trobleshooting ways
+
+---	
 📌 *Stay tuned for more!*
 
 
