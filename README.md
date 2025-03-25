@@ -61,6 +61,45 @@ This repository serves as a personal reference and a resource for anyone looking
 **Which query is most optimized?** 🤔
 
 ---
+
+## 🚀 Splunk Training - Day 3 Topics
+
+#__*| chart command*__
+- Stack in chart
+- ❓Difference between output of |chart and |stats outputs ?** 🤔
+- Trellis in chart
+
+#__*Single Value Visualization*__
+- Single Value
+- Radial Guage
+- Marker Guage
+- Filler Guage
+
+
+#__*`| timechart` command*__
+- use of `span`
+- ❓In `|timechart` command, how to use X-axis as other timestamp field instead of default _time field ?** 🤔
+- Trendlines
+
+#__*`| geostats` command*__
+
+#__*`| geom` command*__
+-❓How to highlight countries inside a map, based on their count ?** 🤔
+-❓How to convert kml file to kmz ?** 🤔
+
+#__*Applications (App)/Add-ons*__
+
+#__*SanKey Diagram*__
+
+#__*`| addcoltotals` command*__
+#__*`| addtotals` command*__
+#__*`| rex` command*__
+
+#__*Type of Searches*__
+
+#__*`| makeresults` command*__
+
+---
 📌 *Stay tuned for more!*
 
 
