@@ -34,6 +34,33 @@ This repository serves as a personal reference and a resource for anyone looking
 - Search restriction through `authorize.conf`
 
 ---
+## 🚀 Splunk Training - Day 2 Topics
+
+#__* Difference between Real-time and Relative-time Search*__
+
+#__* 🔍 Type of Search Modes*__
+- ⚡ Fast
+- 🤖 Smart
+- 🧐 Verbose
+
+#__* Important Splunk Commands*__
+- `| table` command
+- `| rename` command
+- `| stats` command - `count`, `sum`, `avg`, `list`, `values`
+- `| fillnull` command
+- `| eval` command
+- `| eval` with `if-else` command
+- `| eval` with `case` command
+- `| sort` command
+- `| top` command with `limit`
+- `| rare` command with `limit`
+- `| fields` command with `+/-`
+- `| chart` command
+
+#__* ❓ Quiz*__
+**Which query is most optimized?** 🤔
+
+---
 📌 *Stay tuned for more!*
 
 
