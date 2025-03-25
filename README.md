@@ -127,6 +127,37 @@ This repository serves as a personal reference and a resource for anyone looking
 - macro with multiple arguments
 
 ---
+## 🚀 Splunk Training - Day 5 Topics
+
+#__*Data Models and Pivots*__
+- Create Datamodel
+- How to create `Auto-Extracted` field
+- How to create `Calculated` field with `Eval-Expression`
+- How to create `Lookup` field
+- Acceleration
+
+#__*Pivot*__
+- Create a Pivot and save as Report or Dashboard-Panel
+- `| datamodel` command
+
+#__*Splunk Alerts*__
+- Create and schedule an alert with action
+- ❓Difference between 'webhook' and 'API' ?** 🤔
+
+#__*Splunk Reports*__
+- Create and schedule an alert with action
+
+#__*Field Alias*__
+
+#__*Field Expression*__
+- `Regular` : Splunk will write expression
+- `Delimiter` : symbol-wise splitting of event
+
+#__*Workflow Action*__
+- Two Action-Type : 
+	- (1) link 
+	- (2) search
+---
 📌 *Stay tuned for more!*
 
 
