@@ -171,7 +171,91 @@ This repository serves as a personal reference and a resource for anyone looking
 	- configuring `outputs.conf` in '../system/local' [NEVER in in '../system/defult']
 - Trobleshooting ways
 
+---
+## 🚀 Splunk Training - Day 7 Topics
+
+#__*HEC (Http Event Collector)*__
+- How to create HEC Token
+- Push data through CURL command prompt using HEC token
+- Push Multiple Events
+- How to use HEC token if Splunk-cloud is hosted on AWS
+- Indexer acknowledgement
+- To Push a JSON data, define sourcetype as "_json"
+
+#__*Apps/Add-on*__
+- Install ServiceNow Add-on and Integrate with Splunk
+
+#__*Forwarder Management*__
+
+#__*Splunk Architecture in a Distributed environment*__
+
 ---	
+## 🚀 Splunk Training - Day 8 Topics
+
+#__*Event Breaking*__
+- using Console "Source Type" Properties
+- Event splitting on XML File
+- ❓ Difference between LINE_BREAKER and MUST_BREAK_AFTER ? 🤔
+- Event splitting on Random File 
+
+#__*Timestamp Customization*__
+- using Console "Source Type" Properties
+
+#__*User and Roles*__
+- Capabilities
+- Roles
+	- Native capabilities  and Inherited capabilities
+	- Indexes
+	- Restrictions
+	- Resources
+		- Role search job limit
+		- User search job limit
+		- Role search time window limit
+		- Disk space limit
+- Create User
+
+#__*License Management*__
+
+---	
+## 🚀 Splunk Training - Day 9 Topics
+
+#__*Dashboard*__
+- `Classic` type
+- `Studio` type
+- Create a `Classic` Dashboard
+- Optimize Process of a Dashboard :
+	- using `Base search`
+	- using `Saved search`
+	- using `summary index`
+		- Manual creation of `summary index`
+		- Automated creation of `summary index`
+- ❓ How to pass the value from One dashboard to other ? 🤔
+- Create a `Studio` Dashboard
+
+#__*Scripted Input in Splunk*__
+
+---
+## 🚀 Splunk Training - Day 10 Topics
+
+#__*Forwarder Management*__
+- Deployment Server
+	- deploying dummy apps on clients
+	- How to Connect DS with UFs
+	- How create a ServerClass to deploy delivery app on Forwarders
+	
+#__*Index Time Field Extraction*__	
+- Search-Time-Field-Extraction
+- Index-Time-Field-Extraction
+- working with `tranforms.conf` and `props.conf`
+
+
+#__*Unix Integration*__
+- Installing  `Splunk Add-on for UNIX and Linux`
+
+- `| rest` command
+
+#__*Folder Structure*__
+---
 📌 *Stay tuned for more!*
 
 
