@@ -100,6 +100,33 @@ This repository serves as a personal reference and a resource for anyone looking
 #__*`| makeresults` command*__
 
 ---
+
+## 🚀 Splunk Training - Day 4 Topics
+
+#__*knowledge objects*__
+
+#__*Calculated Fields*__
+
+#__*Tags*__
+
+#__*EventType*__
+
+#__*Lookups*__
+- Type of Lookup files
+- `|inputlookup` command
+- `| lookup` command
+- Ways to enrich data through lookup - `|join` or `lookup definitions`
+- Automatic lookups
+- Lookup Editor Application
+- `|outputlookup` command  (💀!!!DANAGEROUS!!!)
+- kvstore lookup
+
+#__*Macro*__
+- macro without argument
+- macro with single argument
+- macro with multiple arguments
+
+---
 📌 *Stay tuned for more!*
 
 
