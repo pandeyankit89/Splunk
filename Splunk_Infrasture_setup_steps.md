@@ -239,15 +239,17 @@ more inputs.conf
 ```
 
   - (6.3) Imporatnts Commands :
-    - (i)  To check the overall status of your search head cluster, run this command from any search-head :
-```ssh
+  -  (i)  To check the overall status of your search head cluster, run this command from any search-head :
+    
+```javascript
 splunk show shcluster-status -auth <username>:<password>
 ```
-    - (ii) To check the status of the KV store running on the cluster. Run this command from any search-head :
+    (ii) To check the status of the KV store running on the cluster. Run this command from any search-head :
+    
 ```javascript
 splunk show kvstore-status -auth <username>:<password>
 ```
-    - (iii)  To check the status of Index-Cluster, Run this command on manager-Node :
+    (iii)  To check the status of Index-Cluster, Run this command on manager-Node :
 
 ```javascript
 /opt/splunk/bin/splunk show cluster-status -auth admin:admin@123
