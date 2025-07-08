@@ -6,7 +6,7 @@ Welcome to my 10 Days Splunk Power User Training Notes! 🚀 This repository con
 
 This repository serves as a personal reference and a resource for anyone looking to learn or revise Splunk fundamentals and advanced concepts. Each day's notes will cover essential topics with practical examples.
 
-## 🚀 Splunk Training - Day 1 Topics
+### 🚀 [Splunk Training - Day 1 Topics](Training_Day%231.pdf)
 
 #__*Types of Dashboard*__
 
@@ -34,7 +34,7 @@ This repository serves as a personal reference and a resource for anyone looking
 - Search restriction through `authorize.conf`
 
 ---
-## 🚀 Splunk Training - Day 2 Topics
+### 🚀 [Splunk Training - Day 2 Topics](Training_Day%232.pdf)
 
 #__*Difference between Real-time and Relative-time Search*__
 
@@ -62,7 +62,7 @@ This repository serves as a personal reference and a resource for anyone looking
 
 ---
 
-## 🚀 Splunk Training - Day 3 Topics
+## 🚀 [Splunk Training - Day 3 Topics](Training_Day%233.pdf)
 
 #__*| chart command*__
 - Stack in chart
@@ -101,7 +101,7 @@ This repository serves as a personal reference and a resource for anyone looking
 
 ---
 
-## 🚀 Splunk Training - Day 4 Topics
+## 🚀 [Splunk Training - Day 4 Topics](Training_Day%234.pdf)
 
 #__*knowledge objects*__
 
@@ -127,7 +127,7 @@ This repository serves as a personal reference and a resource for anyone looking
 - macro with multiple arguments
 
 ---
-## 🚀 Splunk Training - Day 5 Topics
+## 🚀 [Splunk Training - Day 5 Topics](Training_Day%235.pdf)
 
 #__*Data Models and Pivots*__
 - Create Datamodel
@@ -158,7 +158,7 @@ This repository serves as a personal reference and a resource for anyone looking
 	- (1) link 
 	- (2) search
 ---
-## 🚀 Splunk Training - Day 6 Topics
+## 🚀 [Splunk Training - Day 6 Topics](Training_Day%236.pdf)
 
 #__*Universal Forwarder*__
 - Download and Install UF
@@ -172,7 +172,7 @@ This repository serves as a personal reference and a resource for anyone looking
 - Trobleshooting ways
 
 ---
-## 🚀 Splunk Training - Day 7 Topics
+## 🚀 [Splunk Training - Day 7 Topics](Training_Day%237.pdf)
 
 #__*HEC (Http Event Collector)*__
 - How to create HEC Token
@@ -190,7 +190,7 @@ This repository serves as a personal reference and a resource for anyone looking
 #__*Splunk Architecture in a Distributed environment*__
 
 ---	
-## 🚀 Splunk Training - Day 8 Topics
+## 🚀 [Splunk Training - Day 8 Topics](Training_Day%238.pdf)
 
 #__*Event Breaking*__
 - using Console "Source Type" Properties
@@ -217,7 +217,7 @@ This repository serves as a personal reference and a resource for anyone looking
 #__*License Management*__
 
 ---	
-## 🚀 Splunk Training - Day 9 Topics
+## 🚀 [Splunk Training - Day 9 Topics](Training_Day%239.pdf)
 
 #__*Dashboard*__
 - `Classic` type
@@ -235,7 +235,7 @@ This repository serves as a personal reference and a resource for anyone looking
 #__*Scripted Input in Splunk*__
 
 ---
-## 🚀 Splunk Training - Day 10 Topics
+## 🚀 [Splunk Training - Day 10 Topics](Training_Day%2310.pdf)
 
 #__*Forwarder Management*__
 - Deployment Server
