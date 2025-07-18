@@ -25,7 +25,7 @@ sudo tar xvzf splunk.tgz
 # After untar and unzip, delete .tgz file to clean some space -
 sudo rm splunk.tgz
 
-# Create a user `splnk` and make it owner of /opt/splunk directory -
+# Create a user `splunk` and make it owner of /opt/splunk directory -
 sudo useradd -r -m -s /bin/bash splunk
 sudo chown -R splunk:splunk /opt/splunk
 
