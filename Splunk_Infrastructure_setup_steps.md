@@ -143,7 +143,7 @@ more /opt/splunk/etc/system/local/server.conf
     - (c) Select Captain =>  Run the splunk bootstrap shcluster-captain command on the selected instance:
 ```javascript
 splunk bootstrap shcluster-captain -servers_list "<URI>:<management_port>,<URI>:<management_port>,..." -auth <username>:<password>
-``
+```
 ```javascript
 # Login to Search-Head-1, switch to splunk user:
 
