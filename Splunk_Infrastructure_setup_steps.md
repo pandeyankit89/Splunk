@@ -4,7 +4,7 @@
 
 ### Step 2 : Login to AWS. "EC2" -> Security Group
 - (2.1) Created a Security Group with name `sg-splunk` with Inbound-Rule as -
-    - (a) allow inbound traffic from "0.0.0.0/0 (Anywhere)" to Web-Port (8080/TCP) and SSH (22/TCP)
+    - (a) allow inbound traffic from "0.0.0.0/0 (Anywhere)" to Web-Port (8000/TCP) and SSH (22/TCP)
     - (b) allow inbound traffic from "VPC subnet" to Management-Port(8089), KV-store- Port (8191/TCP), Replication-Port for Index Cluster(9000/TCP), Replication-Port for Search-Head-Cluster (9100/TCP)
       ![security-group for splunk](/img/sg-splunk.png)
 	- (2.2) Created 7 ubuntu EC2 instances of available free-tier "t3.small" with 15 GB Storage and security-group as `sg-splunk` and a .pvk file to login through putty.
