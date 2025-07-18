@@ -60,18 +60,26 @@ Go to Settings => Server Settings => Change the minimum free disk space limit 50
 	      - (i) replicationfactor 
 	      - (ii) search factor
 	      - (iii) security-key
-	      - (iv) Index-Cluster name 
+	      - (iv) Index-Cluster name
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Enable_Index_Clustering.png" alt="Enable_Index_Clustering" width="50%" height="60%">
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Manager_Node.png" alt="Manager_Node" width="40%" height="40%">
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Manager_Node_Configuration.png" alt="Manager_Node_Configuration" width="30%" height="20%"><br>
     - (b) restart splunk => /opt/splunk/bin/splunk restart
     - (c) check /opt/splunk/etc/system/local/server.conf
+    <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/manager_node_server.conf.png" alt="manager_node_server.conf" width="50%" height="50%"><br>
     - (d) Login to each Peer Nodes with their respective URLs http://<public IP>:8000/ =>  Setting => Index Clustering => select `Enable Index Clustering` => select "Peer Node" =>  It needs -
           - (i) Manager server URL => http://<Private IP of Manager-Node>:8000/
 				  - (ii) Replication port = 9000 (as earlier decided and mentioned in AWS security-Group)
 				  - (iii) Security-Key = same what was mentioned in Manager-Node
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Enable_Index_Clustering.png" alt="Enable_Index_Clustering" width="50%" height="60%">
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Peer_Node.png" alt="Peer_Node" width="40%" height="40%">
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Peer_Node_Configuration.png" alt="Peer_Node_Configuration" width="30%" height="20%"><br>
 		- (e) restart splunk on each instance => /opt/splunk/bin/splunk restart
 		- (f) check /opt/splunk/etc/system/local/server.conf  on each instance.
+  <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/peer_node_Server_conf.png" alt="peer_node_Server_conf" width="50%" height="50%"><br>
 				
-		- (g) Login to Manager Node URL  	http://<public IP>:8000/ => Settings => check `Index Clustering` => It should show as below -
-		
+		- (g) Login to Manager Node URL  http://`public IP of manager node`:8000/ => Settings => check `Index Clustering` => It should show as below -
+<br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Index_Clustering_Status.png" alt="Index_Clustering_Status" width="80%" height="70%"><br>		
 		
 - Helpful URLs :		
     - (1) Enable the manager node => https://help.splunk.com/en/splunk-enterprise/administer/manage-indexers-and-indexer-clusters/9.4/deploy-the-indexer-cluster/enable-the-indexer-cluster-manager-node#id_38e88f88_6b73_46d2_b74e_ca687d057eff__Enable_the_indexer_cluster_manager_node
@@ -129,7 +137,6 @@ cd /opt/splunk/bin
 /opt/splunk/bin/splunk restart
 more /opt/splunk/etc/system/local/server.conf
 
-
 # Login to Search-Head-2, switch to splunk user:
 
 login as: ubuntu
@@ -140,6 +147,8 @@ cd /opt/splunk/bin
 /opt/splunk/bin/splunk restart
 more /opt/splunk/etc/system/local/server.conf
 ```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Search_Head_server_conf.png" alt="Search_Head_server_conf" width="80%" height="70%"><br>
+
 - (c) Select Captain =>  Run the splunk bootstrap shcluster-captain command on the selected instance:
 ```javascript
 splunk bootstrap shcluster-captain -servers_list "<URI>:<management_port>,<URI>:<management_port>,..." -auth <username>:<password>
@@ -157,10 +166,14 @@ cd /opt/splunk/bin
 
 # check server.conf -
 more /opt/splunk/etc/system/local/server.conf
-
+```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Captain_server_conf.png" alt="Captain_server_conf" width="80%" height="70%"><br>
+```javascript
 # Command to check Search-Head-Cluster Status -
 /opt/splunk/bin/splunk show shcluster-status --auth admin:admin@123
 ```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/shcluster_status.png" alt="shcluster_status" width="80%" height="70%"><br>
+
 ---
 - Important: The URIs that you specify in -servers_list must be exactly the same as the ones that you specified earlier when you initialized each member, in the -mgmt_uri parameter. You cannot, for example, use https://foo.example.com:8089 during initialization and https://foo.subdomain.example.com:8089 here, even if they resolve to the same node.
 
@@ -200,6 +213,8 @@ cd /opt/splunk/bin
 # check server.conf :
 more /opt/splunk/etc/system/local/server.conf
 ```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Search_Head_server_conf_after_adding_index_cluster.png" alt="Search_Head_server_conf_after_adding_index_cluster" width="80%" height="70%"><br>
+
 - (e) Distribute Configurations/App via Deployer to Search-Head:
 
 ```javascript
@@ -245,6 +260,7 @@ more inputs.conf
 ```javascript
 splunk show shcluster-status -auth <username>:<password>
 ```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/shcluster_status.png" alt="shcluster_status" width="80%" height="70%"><br>
 - (ii) To check the status of the KV store running on the cluster. Run this command from any search-head :
     
 ```javascript
@@ -255,5 +271,7 @@ splunk show kvstore-status -auth <username>:<password>
 ```javascript
 /opt/splunk/bin/splunk show cluster-status -auth admin:admin@123
 ```
+<img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/cluster_status.png" alt="cluster_status" width="80%" height="70%"><br>
+
 ---
 
