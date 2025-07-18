@@ -7,7 +7,7 @@
     - (a) allow inbound traffic from "0.0.0.0/0 (Anywhere)" to Web-Port (8000/TCP) and SSH (22/TCP)
     - (b) allow inbound traffic from "VPC subnet" to Management-Port(8089), KV-store- Port (8191/TCP), Replication-Port for Index Cluster(9000/TCP), Replication-Port for Search-Head-Cluster (9100/TCP)
       ![security-group for splunk](/img/sg-splunk.png)
-	- (2.2) Created 7 ubuntu EC2 instances of available free-tier "t3.small" with 15 GB Storage and security-group as `sg-splunk` and a .pvk file to login through putty.
+	- (2.2) Created 7 ubuntu EC2 instances of available free-tier "t3.small" with 15 GB Storage and security-group as `sg-splunk` and a .ppk file to login through putty.
 
 ### Step 3: Login to each ec2 instance and install Splunk Enterprise - 
 ```javascript
