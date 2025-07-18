@@ -140,7 +140,7 @@ cd /opt/splunk/bin
 /opt/splunk/bin/splunk restart
 more /opt/splunk/etc/system/local/server.conf
 ```
-    - (c) Select Captain =>  Run the splunk bootstrap shcluster-captain command on the selected instance:
+- (c) Select Captain =>  Run the splunk bootstrap shcluster-captain command on the selected instance:
 ```javascript
 splunk bootstrap shcluster-captain -servers_list "<URI>:<management_port>,<URI>:<management_port>,..." -auth <username>:<password>
 ```
@@ -200,7 +200,7 @@ cd /opt/splunk/bin
 # check server.conf :
 more /opt/splunk/etc/system/local/server.conf
 ```
-    - (e) Distribute Configurations/App via Deployer to Search-Head:
+- (e) Distribute Configurations/App via Deployer to Search-Head:
 
 ```javascript
 # Login to Deployer, switch to splunk user :
@@ -239,18 +239,18 @@ cd splunk_my_first_app
 more inputs.conf
 ```
 
-  - (6.3) Imporatnts Commands :
-  -  (i)  To check the overall status of your search head cluster, run this command from any search-head :
+- (6.3) Imporatnts Commands :
+- (i)  To check the overall status of your search head cluster, run this command from any search-head :
     
 ```javascript
 splunk show shcluster-status -auth <username>:<password>
 ```
-    (ii) To check the status of the KV store running on the cluster. Run this command from any search-head :
+- (ii) To check the status of the KV store running on the cluster. Run this command from any search-head :
     
 ```javascript
 splunk show kvstore-status -auth <username>:<password>
 ```
-    (iii)  To check the status of Index-Cluster, Run this command on manager-Node :
+- (iii)  To check the status of Index-Cluster, Run this command on manager-Node :
 
 ```javascript
 /opt/splunk/bin/splunk show cluster-status -auth admin:admin@123
