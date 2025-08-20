@@ -1,0 +1,883 @@
+<form version="1.1" theme="light">
+  <label>PostgreSQL Dashboard</label>
+  <init>
+    <set token="Active">true</set>
+  </init>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="servers">
+      <label>Database Servers</label>
+      <default>Server1234</default>
+      <initialValue>Server1234</initialValue>
+      <fieldForLabel>host</fieldForLabel>
+      <fieldForValue>host</fieldForValue>
+      <search>
+        <query>| rest splunk_server=local /servicesNS/nobody/SA-ITOA/itoa_interface/entity report_as=text
+| eval value=spath(value,"{}")
+| mvexpand value
+| eval host=spath(value, "title")
+| eval DB_Type=spath(value, "Database{}")
+| eval retired=spath(value, "retired")
+| where DB_Type == "postgres"
+| fields host</query>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="time" token="Time">
+      <label>Time</label>
+      <default>
+        <earliest>-60m@m</earliest>
+        <latest>now</latest>
+      </default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+        <style> 
+              #table_1 th, #table_2 th, #table_3 th,#table_4 th,#table_5 th,#table_6 th,#table_7 th,#table_8 th{
+                color:white !important;
+                text-align:center !important;
+                vertical-align: middle !important;
+                background-color:#1434A4 !important;
+                font-weight: bold !important;
+                border-radius: 100px !important;
+                border-collapse: collapse !important;
+                border-spacing: 20px !important;
+                border: 5px solid white !important;
+              }
+              #table_1 td, #table_2 td, #table_3 td,#table_4 td,#table_5 td,#table_6 td,#table_7 td,#table_8 td{
+                text-align:center !important;
+                vertical-align: middle !important;
+                border-radius: 100px !important;
+                border-collapse: collapse !important;
+                border-spacing: 20px !important;
+                border: 5px solid white !important;
+                background : #FAF9F6 !important;
+                color : black !important;
+              }
+              
+                            
+              h1.dashboard-header-title {
+                font-size: 30px !important;
+                text-align: center !important;
+                color: #1434A4 !important;
+                font-family: sans-serif !important;
+                font-weight: bold !important;
+                padding: 20px !important;
+              }
+              
+              h1 {
+                padding: 5px !important;
+              }
+              
+              h3.dashboard-element-title {
+                text-align: center !important;
+                padding: 10px !important;
+                background : #B0C4DE !important;
+              }
+  
+
+        </style>
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <single>
+        <title>Database Latest Status</title>
+        <search>
+          <query>index=_internal source="/opt/splunk/var/log/splunk/splunk_app_db_connect_dbx.log" name="*_AVAILABILITY completed"
+| rex field=name "(?&lt;Database&gt;^[^_]+)"
+| where Database = "$servers$"
+| sort -_time
+| appendpipe [ stats count as Status | eval count=0 | where count==0 ]
+| head 1
+| eval Status = if(match(name, ".*_AVAILABILITY completed") AND (now() - _time &lt; 600), "UP🔼" ,"DOWN🔽")
+| fields Status</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="rangeColors">["0x53a051","0x0877a6","0xf8be34","0xf1813f","0xdc4e41"]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="useColors">0</option>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Availability % (in selected Time-Range)</title>
+        <search>
+          <query>index=_internal source="/opt/splunk/var/log/splunk/splunk_app_db_connect_dbx.log" name="*_AVAILABILITY completed"
+| rex field=name "(?&lt;Database&gt;^[^_]+)"
+| eval Status = if(match(name, ".*_AVAILABILITY completed"), 100, 0)
+| where Database = "$servers$"
+| timechart max(Status) as AvailabilityStatus span=5m
+| sort - _time
+| streamstats count as rowNumber
+| eventstats max(rowNumber) as lastRow
+| where rowNumber &gt; 1 AND rowNumber &lt; lastRow
+| eval  AvailabilityStatus = if(isnull(AvailabilityStatus),0,AvailabilityStatus)
+| stats sum(AvailabilityStatus) as sum_of_availability count(AvailabilityStatus) as count_of_availability
+| eval avail_perc = round(sum_of_availability / (count_of_availability),1)
+| eval avail_perc = if(avail_perc &gt; 100,100,avail_perc)
+| fields avail_perc</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">126</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0xd41f1f","0x53a051"]</option>
+        <option name="rangeValues">[99.9]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="unit">%</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <set token="availability">$click.value$</set>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="idle_transaction"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Cache Hit Ratio</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CACHE-HIT-RATIO-DATABASE"
+| bin _time span=5m 
+| stats avg(cache_hit_percent) as cache_hit_ratio by _time</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">128</option>
+        <option name="numberPrecision">0.0</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[95]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="unit">%</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <set token="cache_hit_ratio">$click.value$</set>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="idle_transaction"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$availability$">
+      <chart>
+        <title>Availability %</title>
+        <search>
+          <query>index=_internal source="/opt/splunk/var/log/splunk/splunk_app_db_connect_dbx.log" name="*_AVAILABILITY completed"
+| rex field=name "(?&lt;Database&gt;^[^_]+)"
+| eval Status = if(match(name, ".*_AVAILABILITY completed"), 100, 0)
+| where Database = "$servers$"
+| timechart span=5m max(Status) as Availability</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.abbreviation">none</option>
+        <option name="charting.axisY.maximumNumber">100</option>
+        <option name="charting.axisY.minimumNumber">0</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$cache_hit_ratio$">
+      <chart>
+        <title>Cache Hit Ratio</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CACHE-HIT-RATIO-DATABASE"
+| timechart avg(cache_hit_percent) as avg_cache_hit_ratio</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.axisY.maximumNumber">100</option>
+        <option name="charting.axisY.minimumNumber">0</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$cache_hit_ratio$">
+      <table id="table_1">
+        <title>Buffer Cache Hit Ratio Per Database ( Latest )</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CACHE-HIT-RATIO-DATABASE"
+| stats latest(cache_hit_percent) as cache_hit_ratio by datname
+| where isnotnull(cache_hit_ratio)
+| rename datname as Databsase cache_hit_ratio as "Cache-Hit-Ratio (Latest)"</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <h1 align="center" style="background-color: #800080;color: white;">Connection Metrics</h1>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <single>
+        <title>All Client Connections ( in selected Time-Range)</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_ALL-CLIENT-CONNECTIONS"
+| timechart count(backend_start) as ClientConnections
+| streamstats sum(ClientConnections) as ClientConnections</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">130</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="all_client_connections_count">$click.value$</set>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="idle_transaction"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Number of Connections ( Latest )</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CONNECTION-PER-DATABASE"
+| timechart sum(connections) as Connections span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">131</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[50]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <set token="connections_per_Database_count">$click.value$</set>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="idle_transaction"></unset>
+          <unset token="buffer_backend"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Idle Transaction Count ( Latest )</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_IDLE-TRANSACTION-CONNECTIONS"
+| table _time,pid,usename,state,wait_event_type
+| rename pid as PID,usename as Username,state as State,wait_event_type as EventType
+| timechart dc(PID) as "IDLE Transaction Count" span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">130</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[10]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <set token="idle_transaction">$click.value$</set>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$all_client_connections_count$">
+      <chart>
+        <title>All Client Connections</title>
+        <search>
+          <query>index=postgres_*_events host=$servers$ source="$servers$_ALL-CLIENT-CONNECTIONS"
+| timechart count(backend_start) as ClientConnections
+| streamstats sum(ClientConnections) as ClientConnections</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$connections_per_Database_count$">
+      <table id="table_2">
+        <title>Connections Per Database  ( Latest )</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_CONNECTION-PER-DATABASE"
+| stats latest(connections) as "Connections (Latest)" by datname
+| rename datname as DatabaseName</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
+      </table>
+    </panel>
+    <panel depends="$connections_per_Database_count$">
+      <chart>
+        <title>Number of Connections</title>
+        <search>
+          <query>index=postgres_*_events host=$servers$ source="$servers$_CONNECTION-PER-DATABASE"
+| timechart sum(connections) as Connections</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$idle_transaction$">
+      <table id="table_3">
+        <title>Details of Idle Transaction Connections</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_IDLE-TRANSACTION-CONNECTIONS"
+| table pid,usename,state,wait_event_type
+| rename pid as PID,usename as Username,state as State,wait_event_type as EventType</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="count">5</option>
+      </table>
+    </panel>
+    <panel depends="$idle_transaction$">
+      <chart>
+        <title>Number of  Idle Transaction Connections</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_IDLE-TRANSACTION-CONNECTIONS"
+| table _time,pid,usename,state,wait_event_type
+| rename pid as PID,usename as Username,state as State,wait_event_type as EventType
+| timechart dc(PID) as "IDLE Transaction Count" span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <h1 align="center" style="background-color: #800080;color: white;">Buffer Stats</h1>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <single>
+        <title>Buffers Allocated</title>
+        <search>
+          <query>index=postgres_*_events source=$servers$_BUFFER-WRITING-STATS
+| timechart values(buffers_alloc) as Buffers_Allocated span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">135</option>
+        <option name="rangeColors">["0xdc4e41","0x53a051"]</option>
+        <option name="rangeValues">[100000]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_backend"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <set token="buffers_allocated">$click.value$</set>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Buffers Backend</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_BUFFER-WRITING-STATS"
+| timechart values(buffers_backend) span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">137</option>
+        <option name="rangeColors">["0xdc4e41","0xf8be34","0x53a051"]</option>
+        <option name="rangeValues">[1000,5000]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <set token="buffer_backend">$click.value$</set>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Buffers Clean</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_BUFFER-CLEAN-STATS"
+| timechart values(buffers_clean) span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">137</option>
+        <option name="rangeColors">["0xdc4e41","0xf8be34","0x53a051"]</option>
+        <option name="rangeValues">[1000,5000]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <set token="buffer_clean_count">$click.value$</set>
+          <unset token="buffer_backend"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Buffers Writes</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_BUFFER-WRITING-STATS"
+| timechart values(buffers_checkpoint) as buffers_checkpoint span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">134</option>
+        <option name="rangeColors">["0x53a051","0xf8be34","0xdc4e41"]</option>
+        <option name="rangeValues">[2000,10000]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <set token="buffer_writes_count">$click.value$</set>
+          <unset token="buffer_backend"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+    <panel>
+      <single>
+        <title>Total Checkpoints happened</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CHECKPOINT-STATISTICS"
+| timechart values(checkpoints_timed) as total_checkpoints_happened span=5m</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="colorMode">block</option>
+        <option name="drilldown">all</option>
+        <option name="height">135</option>
+        <option name="rangeColors">["0x53a051","0xdc4e41"]</option>
+        <option name="rangeValues">[10000]</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">0</option>
+        <option name="useColors">1</option>
+        <drilldown>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_backend"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <set token="checkpoint">$click.value$</set>
+          <unset token="buffers_allocated"></unset>
+          <unset token="table_data"></unset>
+        </drilldown>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$buffers_allocated$">
+      <chart>
+        <title>Buffers Allocated Count</title>
+        <search>
+          <query>index=postgres_*_events source=$servers$_BUFFER-WRITING-STATS
+| timechart values(buffers_alloc) as Buffers_Allocated</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$buffer_backend$">
+      <chart>
+        <title>Buffers Backend Count</title>
+        <search>
+          <query>index=postgres_*_events source=$servers$_BUFFER-WRITING-STATS
+| timechart values(buffers_backend) as Buffers_Backend</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$buffer_clean_count$">
+      <chart>
+        <title>Buffer Clean Count</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_BUFFER-CLEAN-STATS"
+| timechart values(buffers_clean) as buffers_clean</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$buffer_writes_count$">
+      <chart>
+        <title>Buffer Write Count</title>
+        <search>
+          <query>index=postgres_*_events  source="$servers$_BUFFER-WRITING-STATS"
+| timechart values(buffers_checkpoint) as buffers_checkpoint</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+    <panel depends="$checkpoint$">
+      <chart>
+        <title>Total Checkpoints Count</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_CHECKPOINT-STATISTICS"
+| timechart values(checkpoints_timed) as total_checkpoints_happened</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleX.visibility">collapsed</option>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">none</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <h1 align="center" style="background-color: #800080;color: white;">Database Related Stats</h1>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table id="table_4">
+        <title>Databases (Latest) data for - Temp Files, Temp Bytes, Size, Transactions Committed and Transactions Rollback</title>
+        <search>
+          <query>index=postgres_*_events (source="$servers$_TRANSACTIONS-COMMITTED-AND-ROLLED-BACK" OR source="$servers$_TEMP-FILES-AND-BYTES" OR source="$servers$_DATABASES-TOTAL-SIZE")
+| rename datname as DatabaseName
+| stats latest(temp_files) as TempFiles,latest(temp_bytes) as TempBytes,latest(size) as Size, latest(xact_commit) as Transactions_Committed,latest(xact_rollback) as Transactions_Rollback,latest(deadlocks) as Deadlocks by DatabaseName</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="drilldown">cell</option>
+        <drilldown>
+          <set token="db_name">$click.value$</set>
+          <set token="col_name">$click.name2$</set>
+          <unset token="connections_per_Database_count"></unset>
+          <unset token="all_client_connections_count"></unset>
+          <unset token="cache_hit_ratio"></unset>
+          <unset token="buffer_writes_count"></unset>
+          <unset token="buffer_backend"></unset>
+          <unset token="buffer_clean_count"></unset>
+          <unset token="availability"></unset>
+          <unset token="checkpoint"></unset>
+          <unset token="buffers_allocated"></unset>
+          <set token="table_data">true</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$db_name$ , $col_name$ , $table_data$">
+      <chart>
+        <title>$col_name$: $db_name$</title>
+        <search>
+          <query>index=postgres_*_events (source="$servers$_TRANSACTIONS-COMMITTED-AND-ROLLED-BACK" OR source="$servers$_TEMP-FILES-AND-BYTES" OR source="$servers$_DATABASES-TOTAL-SIZE")
+| rename datname as DatabaseName
+| timechart latest(temp_files) as TempFiles,latest(temp_bytes) as TempBytes,latest(size) as Size, latest(xact_commit) as Transactions_Committed,latest(xact_rollback) as Transactions_Rollback,latest(deadlocks) as Deadlocks by DatabaseName
+| fields _time, "$col_name$: $db_name$"
+| rex field="$col_name$: $db_name$" "(?&lt;num&gt;\d+(?:\.\d+)?)(?:\s*(?&lt;unit&gt;[kKmMgGtTpP]?B|[bB]ytes))?"
+| eval "$col_name$: $db_name$" = num
+| fields _time, "$col_name$: $db_name$"</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="charting.axisTitleY.visibility">collapsed</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">connect</option>
+        <option name="charting.drilldown">none</option>
+        <option name="charting.legend.placement">bottom</option>
+        <option name="refresh.display">progressbar</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <h1 align="center" style="background-color: #800080;color: white;">Index Related Details</h1>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <input type="radio" token="indexes" searchWhenChanged="true">
+        <label></label>
+        <choice value="Largest">Laregest Indexes</choice>
+        <choice value="Unused">Unused or Stale Indexes</choice>
+        <change>
+          <condition value="Largest">
+            <set token="Largest">true</set>
+            <unset token="Unused"></unset>
+          </condition>
+          <condition value="Unused">
+            <set token="Unused">true</set>
+            <unset token="Largest"></unset>
+          </condition>
+        </change>
+        <default>Largest</default>
+        <initialValue>Largest</initialValue>
+      </input>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$Largest$">
+      <table id="table_5">
+        <title>Largest Indexes</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_LARGEST-INDEXES"
+| stats max(index_size) as index_size by schema,index_name
+| rename schema as Schema,index_name as "index Name",index_size as "index Size"
+| sort - "index Size"</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$Unused$">
+      <table id="table_8">
+        <title>Unused or Stale Indexes</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_UNUSEDORSTALE_INDEXES"
+| stats max(index_size) as index_size by schemaname,index_name
+| rename schemaname as Schema,index_name as "index Name",index_size as "index Size"
+| sort - "index Size"</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="count">3</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <html>
+      <h1 align="center" style="background-color: #800080;color: white;">Details about Queries</h1>
+    </html>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <input type="radio" token="queries" searchWhenChanged="true">
+        <label></label>
+        <choice value="Active">Active Queries</choice>
+        <choice value="Long">Long Running Queries</choice>
+        <change>
+          <condition value="Active">
+            <set token="Active">true</set>
+            <unset token="Long"></unset>
+          </condition>
+          <condition value="Long">
+            <set token="Long">true</set>
+            <unset token="Active"></unset>
+          </condition>
+        </change>
+        <default>Active</default>
+        <initialValue>Active</initialValue>
+      </input>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$Active$">
+      <table id="table_6">
+        <title>Active Queries</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_ACTIVE-QUERIES"
+| eval query = replace(query, "[\s\r\n]+", " ")
+| rename pid as PID,query as Query,state as State,datname as DatabaseName,"query_start" as "Query_Start"
+| stats latest(Query_Start) as Query_Start,latest(Query) as Query,latest(State) as State,latest(PID) as PID by DatabaseName</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="count">5</option>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$Long$">
+      <table id="table_7">
+        <title>Long Running Queries</title>
+        <search>
+          <query>index=postgres_*_events source="$servers$_LONG-RUNNING-QUERIES"
+| eval query = replace(query, "[\s\r\n]+", " ")
+| rename pid as PID,runtime as Runtime,usename as Username, query as Query
+| stats latest(Runtime) as Runtime,latest(Username) as Username,latest(Query) as Query,latest(PID) as PID</query>
+          <earliest>$Time.earliest$</earliest>
+          <latest>$Time.latest$</latest>
+        </search>
+        <option name="drilldown">none</option>
+      </table>
+    </panel>
+  </row>
+</form>
