@@ -11,7 +11,7 @@ Follow the steps below to configure monitoring.
 
 ### ✅ Step 3: Create an index in Splunk something like "postgres_dev_events" or "postgres_prod_events"
 
-### ✅ Step 4: Create Inputs in "Splunk DB Connect" App and run every 5 mins. [Postgres_Input](Postgres_Input.txt)
+### ✅ Step 4: Create Inputs in "Splunk DB Connect" App and run every 5 mins. [Postgres_Input](Postgres_Input.md)
 
 ### ✅ Step 5: Create a Dashboard in Splunk [Postgres_Dashboard](Postgres_Dashboard.txt)
 ![Postgres_Dashboard](Postgres_Dashboard.png)
