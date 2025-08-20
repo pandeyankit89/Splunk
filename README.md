@@ -1,4 +1,4 @@
 - [Splunk PowerUser 10 Days Training Notes](PowerUser_10_Days_Training/Splunk_PowerUser_10_Days_Training_Notes.md)
 - [Splunk Learnings](Splunk_Learnings.md)
 - [Steps to setup Splunk Infrastructure](Splunk_Infrastructure_setup_steps.md)
-- [PostgreSQL Monitoring using Splunk](PostgreSQL_Monitoring_using_Splunk_steps.md)
+- [PostgreSQL Monitoring using Splunk](PostgreSQL_Monitoring_using_Splunk/PostgreSQL_Monitoring_using_Splunk_steps.md)
