@@ -148,7 +148,7 @@ ORDER BY
 	pg_relation_size(c.oid) DESC
 LIMIT 10;
 ```
-## *Input #15:* Long-Running-Queries
+#### *Input #15:* Long-Running-Queries
 ```SQL
 SELECT pid, now() - query_start AS runtime, usename, query
 FROM pg_stat_activity
@@ -271,4 +271,5 @@ ORDER BY
 
 ```
 ---
+
 
