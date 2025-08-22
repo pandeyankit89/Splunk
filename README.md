@@ -2,3 +2,4 @@
 - [Splunk Learnings](Splunk_Learnings.md)
 - [Steps to setup Splunk Infrastructure](Splunk_Infrastructure_setup_steps.md)
 - [PostgreSQL Monitoring using Splunk](PostgreSQL_Monitoring_using_Splunk/PostgreSQL_Monitoring_using_Splunk_steps.md)
+- [Splunk Architecture Related FAQs](Splunk_Architecture_FAQs.md)
