@@ -1,5 +1,5 @@
 ### Splunk Architecture FAQs :
-
+---
 #### (1) What is the difference between Replication-Factor of Indexer Cluster and Search-Head Cluster? What does each cluster replicate?
 - **Indexer Cluster**: Replication-Factor = number of copies of raw data/ data-buckets across indexers for high availability.  
 - **Search-Head Cluster**: Replicates search artifacts (knowledge bundles, search jobs) for high availability.
@@ -81,4 +81,4 @@ No, you cannot force it manually. With 2 members, quorum is weak, but one will s
 #### (16) What happens if the Captain (which went down) comes back up while other Search-Heads are running?
 It rejoins as a regular (non-captain) member. The current Captain remains unless another election is triggered.
 
---
+---
