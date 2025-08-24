@@ -49,7 +49,7 @@ Please confirm new password: admin@123
 Go to AWS => EC2 => Instance => check each instance one by one => Copy Instance `Public IP` => modify Splunk URL like http://<public IP>:8000/ => open in Browser
 
 ### Step 5: Change minimum free disk limit : 
-Go to Settings => Server Settings => Change the minimum free disk space limit 5000 MB to 1000. => go to `Server Control` => Restart Splunk Instance [Do this for each instance, as in POC we will have less space] 
+Go to Settings => Server Settings => General Settings =>  Change the minimum free disk space limit 5000 MB to 1000. => go to `Server Control` => Restart Splunk Instance [Do this for each instance, as in POC we will have less space] 
 
 ### Step 6: Setup Approach :
 
@@ -68,7 +68,7 @@ Go to Settings => Server Settings => Change the minimum free disk space limit 50
     - (c) check /opt/splunk/etc/system/local/server.conf
     <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/manager_node_server.conf.png" alt="manager_node_server.conf" width="50%" height="50%"><br>
     - (d) Login to each Peer Nodes with their respective URLs http://<public IP>:8000/ =>  Setting => Index Clustering => select `Enable Index Clustering` => select "Peer Node" =>  It needs -
-          - (i) Manager server URL => http://<Private IP of Manager-Node>:8089/
+          - (i) Manager server URL => https://<Private IP of Manager-Node>:8089/
 				  - (ii) Replication port = 9000 (as earlier decided and mentioned in AWS security-Group)
 				  - (iii) Security-Key = same what was mentioned in Manager-Node
 <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Enable_Index_Clustering.png" alt="Enable_Index_Clustering" width="50%" height="60%">
