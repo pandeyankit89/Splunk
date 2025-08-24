@@ -89,6 +89,47 @@ Go to Settings => Server Settings => General Settings =>  Change the minimum fre
     - (1) If want to create a new index => create on Manager-Node
     - (2) If want to send data => send to any Peer node
 
+#### Create New Index in Index-Tier :
+- (1) Login to Manager node and create the new index in indexes.conf :
+```
+sudo su - splunk
+cd /opt/splunk/etc/manager-apps/_cluster/local
+vi indexes.conf
+```
+- Add below stanza to create an index :
+```
+[<my_index_name>]
+homePath = $SPLUNK_DB/<my_index_name>/db
+coldPath = $SPLUNK_DB/<my_index_name>/colddb
+thawedPath = $SPLUNK_DB/<my_index_name>/thaweddb
+maxDataSize = auto_high_volume
+maxHotBuckets = 10
+maxWarmDBCount = 300
+repFactor = auto
+```
+- (2) Apply cluster-bundle :
+```
+/opt/splunk/bin/splunk apply cluster-bundle -auth admin:admin@123
+Created new bundle with checksum=8B4EC967CA2904E1095F33EE6D414715
+Please run 'splunk show cluster-bundle-status' for checking the status of the applied bundle.
+OK
+```
+- (3) check status :
+```
+/opt/splunk/bin/splunk show cluster-bundle-status -auth admin:admin@123
+```
+- (4) If Error :
+Populated manager-apps location found, but master-apps is also populated. There can be only one. This must be fixed before continuing
+Solution : 
+```
+mv master-apps/ master-apps_backup/
+/opt/splunk/bin/splunk restart
+```
+- (5) Test with Command :
+```
+echo "test data from indexer 2 $(date)" | /opt/splunk/bin/splunk add oneshot -index <my_index_name> -auth admin:admin@123
+```
+---
 ### Search-Head-Cluster Tier :
 	
 - (6.2) Search-Head-Cluster consists of a `Deployer` and multiple `Search-Heads`. One among them will be configured as `Captain` search-head. Deplyoer is responsible for deploying `Apps` on each seacrch-heads.
