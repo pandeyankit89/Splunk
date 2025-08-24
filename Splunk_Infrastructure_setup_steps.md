@@ -68,7 +68,7 @@ Go to Settings => Server Settings => Change the minimum free disk space limit 50
     - (c) check /opt/splunk/etc/system/local/server.conf
     <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/manager_node_server.conf.png" alt="manager_node_server.conf" width="50%" height="50%"><br>
     - (d) Login to each Peer Nodes with their respective URLs http://<public IP>:8000/ =>  Setting => Index Clustering => select `Enable Index Clustering` => select "Peer Node" =>  It needs -
-          - (i) Manager server URL => http://<Private IP of Manager-Node>:8000/
+          - (i) Manager server URL => http://<Private IP of Manager-Node>:8089/
 				  - (ii) Replication port = 9000 (as earlier decided and mentioned in AWS security-Group)
 				  - (iii) Security-Key = same what was mentioned in Manager-Node
 <br><br><img style="margin-left:10%;" src="https://github.com/pandeyankit89/Splunk/blob/main/img/Enable_Index_Clustering.png" alt="Enable_Index_Clustering" width="50%" height="60%">
