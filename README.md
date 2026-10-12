@@ -3,3 +3,4 @@
 - [Steps to setup Splunk Infrastructure](Splunk_Infrastructure_setup_steps.md)
 - [PostgreSQL Monitoring using Splunk](PostgreSQL_Monitoring_using_Splunk/PostgreSQL_Monitoring_using_Splunk_steps.md)
 - [Splunk Architecture Related FAQs](Splunk_Architecture_FAQs.md)
+- [Splunk Enterprise Admin Certification Notes/PDF](Enterprise_Admin_Certification/Splunk_Enterprise_Admin_Cert_Notes.pdf)
